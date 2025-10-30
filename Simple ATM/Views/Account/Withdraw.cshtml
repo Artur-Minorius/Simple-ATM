@@ -6,7 +6,7 @@
 
 <form asp-action="SubmitWithdrawal" method="post" class="withdrawal-form">
     <label for="amount" class="withdrawal-label">Enter amount</label>
-    <input type="text" asp-for="Amount" value="" name="amount" pattern="[0-9]*" class="withdrawal-input" />
+    <input type="text" asp-for="Amount" inputmode="decimal" pattern="^[0-9]+([.,][0-9]{1,2})?$" class="withdrawal-input" />
     <input type="submit" name="name" value="Withdraw" class="withdrawal-submit-btn" />
 </form>
 

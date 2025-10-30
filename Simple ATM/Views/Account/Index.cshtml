@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<Simple_ATM.Models.ATM_Data.User>
 @using Microsoft.AspNetCore.Components
-
+@using Simple_ATM.Models.ViewModels
 <h2>@ViewData["Title"]</h2>
 
 <table class="table">
@@ -11,6 +11,7 @@
             <th>Card Pin</th>
             <th>Amount</th>
             <th>Blocked</th>
+            <th colspan="2"></th>
         </tr>
     </thead>
     <tbody>
@@ -22,8 +23,15 @@
                 <td>@user.CardPin</td>
                 <td>$@user.CardAmount</td>
                 <td>@user.IsBlocked</td>
+                <td>
+                    @await Html.PartialAsync("_Delete", new UserViewModel { Id = user.UserId })
+                </td>
+                <td>
+                    @await Html.PartialAsync("_Unlock", new UserViewModel { Id = user.UserId })
+                </td>
             </tr>
         }
     </tbody>
 </table>
-
+<button onclick="location.href='@Url.Action("Generate")'" class="navigation-button" style="font-size:initial; width:auto;">Generate random</button>
+<button onclick="location.href='@Url.Action("DropUsers")'" class="navigation-button" style="font-size:initial; width:auto;">Drop table</button>

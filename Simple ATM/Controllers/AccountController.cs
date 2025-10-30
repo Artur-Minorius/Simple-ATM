@@ -19,23 +19,6 @@ namespace Simple_ATM.Controllers
         public async Task<IActionResult> Index()
         {
             var users = await _context.Users.ToListAsync();
-
-            if (users.Count == 0)
-            {
-                string cardNumber;
-                string cardPin;
-                decimal cardAmount;
-                for (int i = 0; i < 4; i++)
-                {
-                    cardNumber = Enumerable.Range(0, 16).Aggregate("", (a, c) => a + random.Next(0, 10).ToString());
-                    cardPin = Enumerable.Range(0, 4).Aggregate("", (a, c) => a + random.Next(0, 10).ToString());
-                    cardAmount = random.Next(10, 10000) + (decimal)Math.Round(random.NextDouble(), 2);
-                    await _context.AddAsync(new User { CardNumber = cardNumber, CardAmount = cardAmount, CardPin = cardPin });
-                }
-                await _context.SaveChangesAsync();
-            }
-
-
             return View(users);
         }
         [HttpGet]
@@ -171,7 +154,49 @@ namespace Simple_ATM.Controllers
 
             return View();
         }
+        [HttpGet]
+        public async Task<IActionResult> Generate()
+        {
+            var cardNumber = Enumerable.Range(0, 16).Aggregate("", (a, c) => a + random.Next(0, 10).ToString());
+            var cardPin = Enumerable.Range(0, 4).Aggregate("", (a, c) => a + random.Next(0, 10).ToString());
+            var cardAmount = random.Next(10, 10000) + (decimal)Math.Round(random.NextDouble(), 2);
+            await _context.AddAsync(new User { CardNumber = cardNumber, CardAmount = cardAmount, CardPin = cardPin });
+            await _context.SaveChangesAsync();
 
+            return RedirectToAction("Index");
+        }
+        [HttpGet]
+        public async Task<IActionResult> DropUsers()
+        {
+            _context.RemoveRange(_context.Users);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        public async Task<IActionResult> Delete(UserViewModel model)
+        {
+            if (!ModelState.IsValid)
+                SomethingWentWrong();
+
+            var user = await _context.Users.FindAsync(model.Id);
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        public async Task<IActionResult> Unlock(UserViewModel model)
+        {
+            if (!ModelState.IsValid)
+                SomethingWentWrong();
+
+            var user = await _context.Users.FindAsync(model.Id);
+            user.IsBlocked = false;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
         public IActionResult Exit()
         {
             HttpContext.Session.Remove("UserId");
@@ -192,6 +217,7 @@ namespace Simple_ATM.Controllers
 
             var operations = await _context.Operations
                 .Where(o => o.UserId == userId)
+                .OrderByDescending(o => o.OperationId)
                 .ToListAsync();
 
             var operationsModel = new UserOperationsViewModel
@@ -230,19 +256,28 @@ namespace Simple_ATM.Controllers
                 return res;
 
             if (!ModelState.IsValid)
-                return RedirectToAction("Error", new ErrorViewModel { RequestId = AccountConsts.SomethingWentWrong, BackAction = "Dashboard", BackController = "Account" });
-            if (user.CardAmount < model.Amount)
-                return RedirectToAction("Error", new ErrorViewModel { RequestId = AccountConsts.InsufficientFunds, BackAction = "Dashboard", BackController = "Account" });
+                return SomethingWentWrong();
 
-            
+            string input = model.Amount?.Trim();
+            if (string.IsNullOrEmpty(input))
+                return SomethingWentWrong();
 
-            _context.Operations.Add(new Operation { Amount = model.Amount, UserId = userId.Value, User = user });
-            user.CardAmount += model.OperationType == OperationType.Withdrawal ? -model.Amount : model.Amount;
+            input = input.Replace(',', '.');
+            if (!decimal.TryParse(input, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var amount))
+                return SomethingWentWrong();
+
+            if (user.CardAmount < amount)
+                return SomethingWentWrong();
+
+
+
+            _context.Operations.Add(new Operation { Amount = amount, UserId = userId.Value, User = user });
+            user.CardAmount += model.OperationType == OperationType.Withdrawal ? -amount : amount;
             await _context.SaveChangesAsync();
 
             var operationResult = new OperationResultViewModel
             {
-                Amount = model.Amount,
+                Amount = amount,
                 CardNumber = user.CardNumber,
                 RemainingAmount = user.CardAmount,
                 OperationType = OperationType.Withdrawal
@@ -286,6 +321,10 @@ namespace Simple_ATM.Controllers
             Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
             Response.Headers["Pragma"] = "no-cache";
             Response.Headers["Expires"] = "0";
+        }
+        private IActionResult SomethingWentWrong()
+        {
+            return RedirectToAction("Error", new ErrorViewModel { RequestId = AccountConsts.SomethingWentWrong, BackAction = "Dashboard", BackController = "Account" });
         }
     }
 }
