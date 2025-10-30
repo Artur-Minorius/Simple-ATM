@@ -1,0 +1,13 @@
+﻿.label{
+    font-weight:bold;
+    display: block;
+}
+.operation-data{
+    border: 2px solid black;
+    padding: 10px;
+    width: 400px;
+    margin:auto;
+}
+.operation-element{
+
+}

@@ -1,0 +1,40 @@
+﻿@model Simple_ATM.Models.ViewModels.OperationResultViewModel
+@{
+}
+@section Styles {
+    <link href="~/css/operation.css" rel="stylesheet" />
+}
+
+<div class="operation-data">
+    <div class="operation-element">
+        <label class="label">
+            Card number
+        </label>
+        @Model.CardNumber
+    </div>
+    <div class="operation-element">
+        <label class="label">
+            Operation
+        </label>
+        @Model.OperationType.ToString()
+    </div>
+    <div class="operation-element">
+        <label class="label">
+            Operation amount
+        </label>
+        @if (Model.OperationType == Simple_ATM.Common.Enums.OperationType.Withdrawal)
+            @(-Model.Amount)
+        else
+            @Model.Amount
+
+    </div>
+    <div class="operation-element">
+        <label class="label">
+            Remaining
+        </label>
+        @Model.RemainingAmount
+    </div>
+
+    <button onclick="location.href='@Url.Action("Dashboard")'" class="navigation-button">Back</button>
+    <button onclick="location.href='@Url.Action("Exit")'" class="navigation-button">Exit</button>
+</div>

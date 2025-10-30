@@ -1,0 +1,19 @@
+﻿.dashboard-buttons{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+.dashboard-element {
+    width: 200px;
+    height: 50px;
+    margin: 5px;
+    font-size: 20px;
+    cursor: pointer;
+}
+.dashboard-content {
+    display: flex;
+    justify-content: center;
+}
+.title{
+    text-align: center
+}

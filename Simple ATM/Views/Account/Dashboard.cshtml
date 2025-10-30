@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+}
+
+<h2 class="title">@ViewData["Title"]</h2>
+<div class="dashboard-content">
+    <div class="dashboard-buttons">
+        <button class="dashboard-element" onclick="location.href='@Url.Action("Balance", "Account")'">
+                Balance
+        </button>
+        <button class="dashboard-element" onclick="location.href='@Url.Action("Withdraw", "Account")'">
+               Withdraw
+        </button>
+        <button class="dashboard-element" onclick="location.href='@Url.Action("Exit", "Account")'">
+               Exit
+        </button>
+    </div>
+</div>

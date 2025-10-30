@@ -1,0 +1,46 @@
+﻿@model Simple_ATM.Models.ViewModels.UserOperationsViewModel
+
+@{
+    ViewData["Title"] = "Operations";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+}
+<h2 class="title">@ViewData["Title"]</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Card Number</th>
+            <th>Amount left</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>@Model.CardNumber</th>
+            <th>$@Model.CurrentAmount</th>
+            <th>@Model.CurrentDate</th>
+        </tr>
+    </tbody>
+</table>
+<button onclick="location.href='@Url.Action("Dashboard")'" class="navigation-button">Back</button>
+<button onclick="location.href='@Url.Action("Exit")'" class="navigation-button">Exit</button>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Operation id</th>
+            <th>Amount</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var operation in Model.Operations)
+        {
+            <tr>
+                <td>@operation.OperationId</td>
+                <td>$@operation.Amount</td>
+                <td>@operation.OperationTime</td>
+            </tr>
+        }
+    </tbody>
+</table>

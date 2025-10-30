@@ -1,0 +1,17 @@
+﻿@model Simple_ATM.Models.ViewModels.LoginViewModel
+<div id="card-login">
+    <form asp-action="Login" method="post">
+        <span style="color:red; display:block">@ViewBag.Error</span>
+
+        <input asp-for="CardNumber" id="card-input" readonly/>
+        <input type="submit" name="name" value="OK" id="card-submit" />
+        <div id="keyboard"></div>
+    </form>
+    <script>
+        const kb = new NumericKeyboard("#keyboard", "#card-input",
+            {
+                maxLength: 16,
+                format: "4-4-4-4"
+            });
+    </script>
+</div>

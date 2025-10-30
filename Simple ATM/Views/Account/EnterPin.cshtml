@@ -1,0 +1,22 @@
+﻿@model Simple_ATM.Models.ViewModels.EnterPinViewModel
+
+<h2>Enter your PIN</h2>
+
+<div id="pin-login">
+    <form asp-action="EnterPin" method="post">
+        @Html.AntiForgeryToken()
+        <span style="color:red; display:block">@ViewBag.Error</span>
+        <input type="hidden" asp-for="UserId" value="@Model.UserId" />
+        <input id="pin-input" asp-for="Pin" type="password" readonly />
+        <button type="submit" id="pin-submit">Enter</button>
+        <div id="keyboard"></div>
+    </form>
+
+   
+    <script>
+        new NumericKeyboard("#keyboard", "#pin-input", {
+            maxLength: 4,
+            format: "4"
+        });
+    </script>
+</div>

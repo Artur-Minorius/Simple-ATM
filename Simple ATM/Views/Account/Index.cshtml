@@ -1,0 +1,29 @@
+﻿@model IEnumerable<Simple_ATM.Models.ATM_Data.User>
+@using Microsoft.AspNetCore.Components
+
+<h2>@ViewData["Title"]</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>UserId</th>
+            <th>Card Number</th>
+            <th>Card Pin</th>
+            <th>Amount</th>
+            <th>Blocked</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.UserId</td>
+                <td>@user.CardNumber</td>
+                <td>@user.CardPin</td>
+                <td>$@user.CardAmount</td>
+                <td>@user.IsBlocked</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

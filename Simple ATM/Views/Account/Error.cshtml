@@ -1,0 +1,17 @@
+﻿@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<h1 class="text-danger">Error.</h1>
+
+@if (Model.ShowRequestId)
+{
+    
+    <p style="display: block">
+        <strong>Request ID:</strong> <span>@Model.RequestId</span>
+    </p>
+
+    <button onclick="location.href='@Url.Action(Model.BackAction, Model.BackController)'">Back</button>
+}
+

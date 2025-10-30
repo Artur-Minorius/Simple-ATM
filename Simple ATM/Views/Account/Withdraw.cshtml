@@ -1,0 +1,15 @@
+﻿@model Simple_ATM.Models.ViewModels.OperationViewModel
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/withdrawal.css" />
+}
+
+<form asp-action="SubmitWithdrawal" method="post" class="withdrawal-form">
+    <label for="amount" class="withdrawal-label">Enter amount</label>
+    <input type="text" asp-for="Amount" value="" name="amount" pattern="[0-9]*" class="withdrawal-input" />
+    <input type="submit" name="name" value="Withdraw" class="withdrawal-submit-btn" />
+</form>
+
+
+<button onclick="location.href='@Url.Action("Dashboard")'" class="navigation-button">Back</button>
+<button onclick="location.href='@Url.Action("Exit")'" class="navigation-button">Exit</button>
