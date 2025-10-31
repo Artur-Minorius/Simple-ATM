@@ -1,4 +1,8 @@
 ﻿@model Simple_ATM.Models.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Enter card number";
+}
+<h2 class="title">@ViewData["Title"]</h2>
 <div id="card-login">
     <form asp-action="Login" method="post">
         <span style="color:red; display:block">@ViewBag.Error</span>

@@ -1,6 +1,9 @@
 ﻿@model Simple_ATM.Models.ViewModels.EnterPinViewModel
 
-<h2>Enter your PIN</h2>
+@{
+    ViewData["Title"] = "Enter your PIN";
+}
+<h2 class="title">@ViewData["Title"]</h2>
 
 <div id="pin-login">
     <form asp-action="EnterPin" method="post">
