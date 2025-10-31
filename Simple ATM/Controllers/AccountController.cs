@@ -39,7 +39,7 @@ namespace Simple_ATM.Controllers
             }
             var cardNumber = model.CardNumber.Replace("-", "");
             var user = await _context.Users
-                 .FirstOrDefaultAsync(u => u.CardNumber == model.CardNumber);
+                 .FirstOrDefaultAsync(u => u.CardNumber == cardNumber);
 
             if (user == null)
             {
@@ -265,7 +265,7 @@ namespace Simple_ATM.Controllers
             input = input.Replace(',', '.');
             if (!decimal.TryParse(input, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var amount))
                 return SomethingWentWrong();
-
+            amount = decimal.Round(amount, 2);
             if (user.CardAmount < amount)
                 return SomethingWentWrong();
 
