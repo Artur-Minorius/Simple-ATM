@@ -7,6 +7,8 @@
         }
         this.maxLength = options.maxLength || null;
         this.format = options.format || null;
+        this.type = options.type || "int";
+        this.precision = options.precision || null;
         this.onInput = options.onInput || null;
         this.onClear = options.onClear || null;
         this.onRemove = options.onRemove || null;
@@ -28,6 +30,7 @@
             <div class="num-row">
                 <button class="num-btn remove" type="button">&lt;</button>
                 ${this.keyButton(0)}
+                ${this.type === "decimal" ? this.keyButton(".") : ""}
                 <button class="num-btn clear" type="button">C</button>
             </div>
         `;
@@ -43,6 +46,11 @@
         this.container.querySelectorAll(".num-btn").forEach(button => {
             button.addEventListener("click", () => {
                 const key = button.dataset.key;
+                if (key === ".") {
+                    this.addDecimalPoint();
+                    if (this.onInput) this.onInput(key);
+                    return;
+                }
                 if (key !== undefined) {
                     this.addDigit(key);
                     if (this.onInput) this.onInput(key);
@@ -55,16 +63,48 @@
             if (this.onClear) this.onClear();
         });
         this.container.querySelector(".remove").addEventListener("click", () => {
-            let raw = this.targetInput.value.replace(/\D/g, "").slice(0, -1);
+            let raw = this.targetInput.value;
+            if (this.type !== "decimal") {
+                raw = raw.replace(/\D/g, "").slice(0, -1);
+            }
+            else {
+                raw = raw.slice(0, -1);
+            }
+
             this.targetInput.value = this.formatNumber(raw);
             if (this.onRemove) this.onRemove();
         });
     }
+
+    addDecimalPoint() {
+        if (!this.targetInput.value.includes(".")) {
+            if (this.targetInput.value === "") {
+                this.targetInput.value = "0.";
+            } else {
+                this.targetInput.value += ".";
+            }
+        }
+    }
+
     addDigit(digit) {
-        let raw = this.targetInput.value.replace(/\D/g, "");
+        let value = this.targetInput.value;
 
+        if (this.type === "decimal") {
+
+            const parts = value.split(".");
+            if (parts.length === 2 && this.precision !== null) {
+                const fractional = parts[1] || "";
+                if (fractional.length >= this.precision) return;
+            }
+
+            const raw = value.replace(/\D/g, "");
+            if (this.maxLength && raw.length >= this.maxLength) return;
+
+            this.targetInput.value += digit;
+            return;
+        }
+        let raw = value.replace(/\D/g, "");
         if (this.maxLength && raw.length >= this.maxLength) return;
-
         raw += digit;
 
         this.targetInput.value = this.formatNumber(raw);
@@ -73,7 +113,10 @@
     formatNumber(raw) {
         if (!this.format) return raw;
 
+        if (this.type === "decimal" && raw.includes(".")) return raw;
+
         const groups = this.format.split("-").map(n => parseInt(n));
+
         let result = "";
         let index = 0;
 
@@ -81,6 +124,7 @@
             if (raw.length <= index) break;
             result += raw.substr(index, size) + "-";
             index += size;
+
         }
 
         return result.replace(/-$/, "");
