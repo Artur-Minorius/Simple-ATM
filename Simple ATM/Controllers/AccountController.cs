@@ -265,7 +265,8 @@ namespace Simple_ATM.Controllers
             input = input.Replace(',', '.');
             if (!decimal.TryParse(input, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var amount))
                 return SomethingWentWrong();
-            amount = decimal.Round(amount, 2);
+
+            amount = decimal.Abs(decimal.Round(amount, 2));
             if (user.CardAmount < amount)
                 return SomethingWentWrong();
 
