@@ -1,17 +1,19 @@
 ﻿.withdrawal-form {
 }
 
-.withdrawal-form * {
-    margin: 5px;
-}
-
 .withdrawal-submit-btn {
 }
 
 .withdrawal-label {
     display: block;
+    margin: 5px;
 }
 
 .withdrawal-input {
-    display: block;
+    width: 170px;
+    margin:5px;
+}
+.withdrawal-content{
+    display: flex;
+    justify-content: center;
 }

@@ -3,13 +3,23 @@
 @section Styles {
     <link rel="stylesheet" href="~/css/withdrawal.css" />
 }
+<div class="withdrawal-content">
+    <form asp-action="SubmitWithdrawal" method="post" class="withdrawal-form">
+        <label for="amount" class="withdrawal-label">Enter amount</label>
+        <input type="text" asp-for="Amount" inputmode="decimal" pattern="^[0-9]+([.,][0-9]{1,2})?$" class="withdrawal-input" readonly id="amount" />
+        <input type="submit" name="name" value="Withdraw" class="withdrawal-submit-btn" />
+        <div id="keyboard"></div>
+    </form>
+</div>
 
-<form asp-action="SubmitWithdrawal" method="post" class="withdrawal-form">
-    <label for="amount" class="withdrawal-label">Enter amount</label>
-    <input type="text" asp-for="Amount" inputmode="decimal" pattern="^[0-9]+([.,][0-9]{1,2})?$" class="withdrawal-input" />
-    <input type="submit" name="name" value="Withdraw" class="withdrawal-submit-btn" />
-</form>
-
+<script>
+    const kb = new NumericKeyboard("#keyboard", "#amount",
+        {
+            maxLength: 16,
+            type: "decimal",
+            precision: 2
+        });
+</script>
 
 <button onclick="location.href='@Url.Action("Dashboard")'" class="navigation-button">Back</button>
 <button onclick="location.href='@Url.Action("Exit")'" class="navigation-button">Exit</button>
