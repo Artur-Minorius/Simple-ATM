@@ -1,4 +1,4 @@
-﻿using Simple_ATM.Common.Enums;
+﻿using Simple_ATM.DomainLayer.Enums;
 namespace Simple_ATM.Models.ViewModels
 {
     public class OperationViewModel

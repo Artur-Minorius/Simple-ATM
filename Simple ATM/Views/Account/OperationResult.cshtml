@@ -22,7 +22,7 @@
         <label class="label">
             Operation amount
         </label>
-        @if (Model.OperationType == Simple_ATM.Common.Enums.OperationType.Withdrawal)
+        @if (Model.OperationType == Simple_ATM.DomainLayer.Enums.OperationType.Withdrawal)
             @(-Model.Amount)
         else
             @Model.Amount

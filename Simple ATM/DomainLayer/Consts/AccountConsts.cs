@@ -1,6 +1,5 @@
-﻿using Simple_ATM.Models.ATM_Data;
-
-namespace Simple_ATM.Common.Consts
+﻿
+namespace Simple_ATM.DomainLayer.Consts
 {
     public static class AccountConsts
     {
@@ -10,7 +9,5 @@ namespace Simple_ATM.Common.Consts
         public static string SomethingWentWrong = "Something went wrong, try again later";
         public static string InsufficientFunds = "Insufficient funds to withdraw";
         public static string CardWillBeBlockedAfter(int attempts) => $"Incorrect PIN. {attempts} attempts left.";
-        
-
     }
 }

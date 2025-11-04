@@ -1,6 +1,6 @@
-﻿using Simple_ATM.Common.Enums;
+﻿using Simple_ATM.DomainLayer.Enums;
 
-namespace Simple_ATM.Models.ATM_Data
+namespace Simple_ATM.DomainLayer.Entities
 {
     public class Operation
     {
@@ -11,7 +11,7 @@ namespace Simple_ATM.Models.ATM_Data
 
         public int UserId { get; set; }
         public required User User { get; set; }
-        
+
         public DateTime OperationTime { get; set; } = DateTime.UtcNow;
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Simple_ATM.Models.ATM_Data;
+using Simple_ATM.DomainLayer.Entities;
 
-namespace Simple_ATM.Models
+namespace Simple_ATM.Infrastructure.Data
 {
     public class AtmContext : DbContext
     {

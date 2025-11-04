@@ -3,7 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Simple_ATM.Models;
+using Simple_ATM.Infrastructure.Data;
 
 #nullable disable
 
@@ -17,7 +17,7 @@ namespace Simple_ATM.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.10");
 
-            modelBuilder.Entity("Simple_ATM.Models.ATM_Data.Operation", b =>
+            modelBuilder.Entity("Simple_ATM.DomainLayer.Entities.Operation", b =>
                 {
                     b.Property<int>("OperationId")
                         .ValueGeneratedOnAdd()
@@ -42,14 +42,11 @@ namespace Simple_ATM.Migrations
                     b.ToTable("Operations");
                 });
 
-            modelBuilder.Entity("Simple_ATM.Models.ATM_Data.User", b =>
+            modelBuilder.Entity("Simple_ATM.DomainLayer.Entities.User", b =>
                 {
                     b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
-
-                    b.Property<decimal>("CardAmount")
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("CardNumber")
                         .IsRequired()
@@ -75,9 +72,9 @@ namespace Simple_ATM.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Simple_ATM.Models.ATM_Data.Operation", b =>
+            modelBuilder.Entity("Simple_ATM.DomainLayer.Entities.Operation", b =>
                 {
-                    b.HasOne("Simple_ATM.Models.ATM_Data.User", "User")
+                    b.HasOne("Simple_ATM.DomainLayer.Entities.User", "User")
                         .WithMany("Operations")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -86,7 +83,7 @@ namespace Simple_ATM.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Simple_ATM.Models.ATM_Data.User", b =>
+            modelBuilder.Entity("Simple_ATM.DomainLayer.Entities.User", b =>
                 {
                     b.Navigation("Operations");
                 });

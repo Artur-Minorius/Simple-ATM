@@ -1,4 +1,5 @@
-﻿using Simple_ATM.Models.ATM_Data;
+﻿using Simple_ATM.DomainLayer.Entities;
+
 namespace Simple_ATM.Models.ViewModels
 {
     public class UserOperationsViewModel

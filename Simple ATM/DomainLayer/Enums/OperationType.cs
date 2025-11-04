@@ -1,4 +1,4 @@
-﻿namespace Simple_ATM.Common.Enums
+﻿namespace Simple_ATM.DomainLayer.Enums
 {
     public enum OperationType
     {

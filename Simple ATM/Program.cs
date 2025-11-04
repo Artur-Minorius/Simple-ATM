@@ -1,12 +1,17 @@
 using Microsoft.EntityFrameworkCore;
-using Simple_ATM.Models;
-using Simple_ATM.Models.ATM_Data;
+using Simple_ATM.ApplicationLayer.Interfaces.Repository;
+using Simple_ATM.ApplicationLayer.Interfaces;
+using Simple_ATM.ApplicationLayer.Services;
+using Simple_ATM.DomainLayer.Entities;
+using Simple_ATM.Infrastructure.Data;
+using Simple_ATM.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddDbContext<AtmContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 

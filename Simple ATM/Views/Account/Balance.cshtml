@@ -39,7 +39,7 @@
             <tr>
                 <td>@operation.OperationId</td>
                 <td>
-                    $@if (operation.OperationType == Simple_ATM.Common.Enums.OperationType.Withdrawal)
+                    $@if (operation.OperationType == Simple_ATM.DomainLayer.Enums.OperationType.Withdrawal)
                         @(-operation.Amount)
                     else
                         @operation.Amount
