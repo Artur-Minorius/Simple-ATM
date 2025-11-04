@@ -6,5 +6,6 @@ namespace Simple_ATM.ApplicationLayer.Interfaces.Repository
     {
         Task AddAsync(Operation operation);
         Task<List<Operation>> GetByUserIdAsync(int userId);
+        Task SaveChangesAsync();
     }
 }

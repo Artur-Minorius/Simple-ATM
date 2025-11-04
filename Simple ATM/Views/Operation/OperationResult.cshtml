@@ -22,10 +22,7 @@
         <label class="label">
             Operation amount
         </label>
-        @if (Model.OperationType == Simple_ATM.DomainLayer.Enums.OperationType.Withdrawal)
-            @(-Model.Amount)
-        else
-            @Model.Amount
+        @Model.Amount
 
     </div>
     <div class="operation-element">
@@ -35,6 +32,6 @@
         @Model.RemainingAmount
     </div>
 
-    <button onclick="location.href='@Url.Action("Dashboard")'" class="navigation-button">Back</button>
-    <button onclick="location.href='@Url.Action("Exit")'" class="navigation-button">Exit</button>
+    <button onclick="location.href='@Url.Action("Dashboard", "Account")'" class="navigation-button">Back</button>
+    <button onclick="location.href='@Url.Action("Exit", "Account")'" class="navigation-button">Exit</button>
 </div>

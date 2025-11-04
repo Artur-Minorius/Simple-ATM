@@ -42,7 +42,7 @@ namespace Simple_ATM.Controllers
             }
 
             if (user.IsBlocked)
-                return View("Error", new ErrorViewModel { RequestId = AccountConsts.CardIsBlocked });
+                return CardBlockedError();
 
             HttpContext.Session.SetInt32("PendingUserId", user.UserId);
             return RedirectToAction("EnterPin");
@@ -78,17 +78,7 @@ namespace Simple_ATM.Controllers
             if (!result.Success)
             {
                 if (result.CardBlocked)
-                {
-                    // Redirect to error page for blocked cards
-                    var errorModel = new ErrorViewModel
-                    {
-                        RequestId = AccountConsts.CardNowBlocked,
-                        BackAction = "Login",
-                        BackController = "Account"
-                    };
-                    return RedirectToAction("Error", errorModel);
-                }
-
+                    return CardBlockedError();
                 ViewBag.Error = result.Message;
                 return View(model);
             }
@@ -105,8 +95,7 @@ namespace Simple_ATM.Controllers
         }
         public async Task<IActionResult> Dashboard()
         {
-            //Revalidate every time page is loaded
-            SetRevalidationHeaders(); // How to?
+            SetRevalidationHeaders();
 
 
             var userId = HttpContext.Session.GetInt32("UserId");
@@ -117,7 +106,8 @@ namespace Simple_ATM.Controllers
             var user = await _accountService.GetUserByIdAsync(userId.Value);
             if (user == null)
                 return RedirectToAction("Login");
-
+            if (user.IsBlocked)
+                return CardBlockedError();
             return View();
         }
 
@@ -129,7 +119,7 @@ namespace Simple_ATM.Controllers
 
         public async Task<IActionResult> Balance()
         {
-            SetRevalidationHeaders();//How to do it 
+            SetRevalidationHeaders();
 
             var userId = HttpContext.Session.GetInt32("UserId");
             if (!userId.HasValue)
@@ -138,14 +128,17 @@ namespace Simple_ATM.Controllers
             var user = await _accountService.GetUserByIdAsync(userId.Value);
             if (user == null)
                 return RedirectToAction("Login");
-
-
+            if (user.IsBlocked)
+                return CardBlockedError();
+            var sortedOperations = user.Operations
+                .OrderByDescending(o => o.OperationTime)
+                .ToList();
             var operationsModel = new UserOperationsViewModel
             {
                 UserId = userId.Value,
                 CardNumber = user.CardNumber,
                 CurrentAmount = user.CardAmount,
-                Operations = user.Operations
+                Operations = sortedOperations
             };
             return View(operationsModel);
         }

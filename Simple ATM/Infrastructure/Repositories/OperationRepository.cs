@@ -5,7 +5,7 @@ using Simple_ATM.Infrastructure.Data;
 
 namespace Simple_ATM.Infrastructure.Repositories
 {
-    public class OperationRepository: IOperationRepository
+    public class OperationRepository : IOperationRepository
     {
         private readonly AtmContext _context;
         public OperationRepository(AtmContext context) => _context = context;
@@ -15,5 +15,6 @@ namespace Simple_ATM.Infrastructure.Repositories
             _context.Operations.Where(o => o.UserId == userId)
             .OrderByDescending(o => o.OperationId)
             .ToListAsync();
+        public Task SaveChangesAsync() => _context.SaveChangesAsync();
     }
 }
