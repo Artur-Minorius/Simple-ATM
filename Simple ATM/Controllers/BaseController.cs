@@ -22,5 +22,14 @@ namespace Simple_ATM.Controllers
                 BackController = "Account"
             });
         }
+        protected IActionResult CardBlockedError()
+        {
+            return RedirectToAction("Error", "Account", new ErrorViewModel
+            {
+                RequestId = AccountConsts.CardIsBlocked,
+                BackAction = "Dashboard",
+                BackController = "Account"
+            });
+        }
     }
 }
