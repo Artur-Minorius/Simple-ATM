@@ -268,7 +268,7 @@ namespace Simple_ATM.Controllers
 
             amount = decimal.Abs(decimal.Round(amount, 2));
             if (user.CardAmount < amount)
-                return SomethingWentWrong();
+                return RedirectToAction("Error", new ErrorViewModel { RequestId = AccountConsts.InsufficientFunds, BackAction = "Dashboard", BackController = "Account" });
 
 
 
