@@ -23,6 +23,7 @@ namespace Simple_ATM.Controllers
         public async Task<IActionResult> SubmitWithdrawal(OperationViewModel model)
         {
             var userId = HttpContext.Session.GetInt32("UserId");
+
             //Session expired or not logged in
             if (!userId.HasValue)
                 return RedirectToAction("Login", "Account");

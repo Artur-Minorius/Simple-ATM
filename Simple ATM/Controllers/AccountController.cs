@@ -33,8 +33,10 @@ namespace Simple_ATM.Controllers
 
             if (!ModelState.IsValid)
                 return View(model);
+
             var cardNumber = model.CardNumber.Replace("-", "");
             var user = await _accountService.AuthenticateCardAsync(model.CardNumber);
+
             if (user == null)
             {
                 ViewBag.Error = AccountConsts.CardNotFound;
@@ -45,14 +47,17 @@ namespace Simple_ATM.Controllers
                 return CardBlockedError();
 
             HttpContext.Session.SetInt32("PendingUserId", user.UserId);
+
             return RedirectToAction("EnterPin");
         }
         [HttpGet]
         public IActionResult EnterPin()
         {
             var pendingUserId = HttpContext.Session.GetInt32("PendingUserId");
+
             if (!pendingUserId.HasValue)
                 return RedirectToAction("Login");
+
             return View(new EnterPinViewModel { Pin = "", UserId = pendingUserId.Value });
         }
         [HttpPost]
@@ -63,9 +68,11 @@ namespace Simple_ATM.Controllers
                 return View(model);
 
             var pendingUserId = HttpContext.Session.GetInt32("PendingUserId");
+
             // Session expired
             if (!pendingUserId.HasValue)
                 return RedirectToAction("Login");
+
             // Manual change in field's value
             if (model.UserId != pendingUserId.Value)
             {
@@ -82,8 +89,10 @@ namespace Simple_ATM.Controllers
                 ViewBag.Error = result.Message;
                 return View(model);
             }
+
             HttpContext.Session.Remove("PendingUserId");
             HttpContext.Session.SetInt32("UserId", model.UserId);
+
             return RedirectToAction("Dashboard");
         }
 
@@ -91,6 +100,7 @@ namespace Simple_ATM.Controllers
         {
             if (!ModelState.IsValid)
                 return View();
+
             return View(model);
         }
         public async Task<IActionResult> Dashboard()
@@ -104,16 +114,17 @@ namespace Simple_ATM.Controllers
                 return RedirectToAction("Login");
 
             var user = await _accountService.GetUserByIdAsync(userId.Value);
-            if (user == null)
-                return RedirectToAction("Login");
-            if (user.IsBlocked)
-                return CardBlockedError();
+
+            if (user == null) return RedirectToAction("Login");
+            if (user.IsBlocked) return CardBlockedError();
+
             return View();
         }
 
         public IActionResult Exit()
         {
             HttpContext.Session.Remove("UserId");
+
             return RedirectToAction("Login");
         }
 
@@ -126,13 +137,16 @@ namespace Simple_ATM.Controllers
                 return RedirectToAction("Login");
 
             var user = await _accountService.GetUserByIdAsync(userId.Value);
+
             if (user == null)
                 return RedirectToAction("Login");
             if (user.IsBlocked)
                 return CardBlockedError();
+
             var sortedOperations = user.Operations
                 .OrderByDescending(o => o.OperationTime)
                 .ToList();
+
             var operationsModel = new UserOperationsViewModel
             {
                 UserId = userId.Value,
@@ -140,6 +154,7 @@ namespace Simple_ATM.Controllers
                 CurrentAmount = user.CardAmount,
                 Operations = sortedOperations
             };
+
             return View(operationsModel);
         }
 
@@ -164,7 +179,9 @@ namespace Simple_ATM.Controllers
         {
             if (!ModelState.IsValid)
                 return RedirectToAction("Error", new ErrorViewModel { RequestId = "Failed to delete user", BackAction = "Index", BackController = "Account" });
+
             var userId = model.Id;
+
             await _accountService.DeleteUserAsync(userId);
 
             return RedirectToAction("Index");
@@ -176,6 +193,7 @@ namespace Simple_ATM.Controllers
                 return RedirectToAction("Error", new ErrorViewModel { RequestId = "Failed to unlock user", BackAction = "Index", BackController = "Account" });
 
             var userId = model.Id;
+
             await _accountService.UnlockUserAsync(userId);
 
             return RedirectToAction("Index");

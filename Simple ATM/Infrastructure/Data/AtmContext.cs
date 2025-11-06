@@ -8,9 +8,7 @@ namespace Simple_ATM.Infrastructure.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Operation> Operations { get; set; }
 
-        public AtmContext(DbContextOptions<AtmContext> options) : base(options)
-        {
-        }
+        public AtmContext(DbContextOptions<AtmContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

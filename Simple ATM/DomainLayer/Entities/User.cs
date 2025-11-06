@@ -16,7 +16,6 @@ namespace Simple_ATM.DomainLayer.Entities
         public decimal CardAmount =>
              Operations?.Sum(o => o.OperationType == OperationType.Deposit ? o.Amount : -o.Amount) ?? 0m; // If no operations was done, set it to 0
         public List<Operation> Operations { get; set; } = new();
-
         public int FailedAttempts { get; set; } = 0;
     }
 }
