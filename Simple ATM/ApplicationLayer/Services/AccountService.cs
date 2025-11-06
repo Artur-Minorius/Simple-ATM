@@ -8,11 +8,13 @@ namespace Simple_ATM.ApplicationLayer.Services
     public class AccountService : IAccountService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IOperationRepository _operationRepository;
         private readonly Random _random = new();
 
-        public AccountService(IUserRepository userRepository)
+        public AccountService(IUserRepository userRepository, IOperationRepository operationRepository)
         {
             _userRepository = userRepository;
+            _operationRepository = operationRepository;            
         }
 
         public async Task<User?> AuthenticateCardAsync(string cardNumber)
@@ -24,6 +26,7 @@ namespace Simple_ATM.ApplicationLayer.Services
         public async Task<PinVerificationResult> VerifyPinAsync(int userId, string pin)
         {
             var user = await _userRepository.GetByIdAsync(userId);
+
             if (user == null) return new PinVerificationResult { Success = false, Message = AccountConsts.CardNotFound };
             if (user.IsBlocked) return new PinVerificationResult { Success = false, Message = AccountConsts.CardIsBlocked };
 
@@ -48,6 +51,7 @@ namespace Simple_ATM.ApplicationLayer.Services
             }
 
             await _userRepository.SaveChangesAsync();
+
             return new PinVerificationResult
             {
                 Success = false,
@@ -64,24 +68,33 @@ namespace Simple_ATM.ApplicationLayer.Services
                 CardNumber = string.Concat(Enumerable.Range(0, 16).Select(_ => _random.Next(0, 10))),
                 CardPin = string.Concat(Enumerable.Range(0, 4).Select(_ => _random.Next(0, 10))),
             };
+
+            await _userRepository.AddAsync(user);
+            await _userRepository.SaveChangesAsync();
+
             var operation = new Operation
             {
                 User = user,
                 OperationType = DomainLayer.Enums.OperationType.Deposit,
                 Amount = (decimal)_random.Next(10, 10000)
             };
-            user.Operations.Add(operation);
-            await _userRepository.AddAsync(user);
-            await _userRepository.SaveChangesAsync();
+
+            await _operationRepository.AddAsync(operation);
+            await _operationRepository.SaveChangesAsync();
+            
             return user;
         }
 
         public async Task<bool> DeleteUserAsync(int userId)
         {
             var user = await _userRepository.GetByIdAsync(userId);
+
             if (user == null) return false;
+
             _userRepository.Remove(user);
+
             await _userRepository.SaveChangesAsync();
+
             return true;
         }
         public async Task DeleteAllUsersAsync()
@@ -94,9 +107,13 @@ namespace Simple_ATM.ApplicationLayer.Services
         public async Task<bool> UnlockUserAsync(int userId)
         {
             var user = await _userRepository.GetByIdAsync(userId);
+
             if (user == null) return false;
+
             user.IsBlocked = false;
+
             await _userRepository.SaveChangesAsync();
+
             return true;
         }
 

@@ -16,34 +16,59 @@ namespace Simple_ATM.ApplicationLayer.Services
             _operationRepository = operationRepository;
             _accountService = accountService;
         }
-        public Task<OperationResult> DepositAsync(int userId, string amount)
+        public async Task<OperationResult> DepositAsync(int userId, string amount)
         {
-            throw new NotImplementedException();
+            var user = await _accountService.GetUserByIdAsync(userId);
+
+            if (user == null)
+                return new OperationResult { Success = false, Message = AccountConsts.CardNotFound };
+
+            if (!decimal.TryParse(amount, out decimal amountConverted))
+                return new OperationResult { Success = false };
+
+            amountConverted = decimal.Abs(decimal.Round(amountConverted, 2));
+
+            var operation = new Operation
+            {
+                User = user,
+                Amount = amountConverted,
+                OperationType = OperationType.Deposit
+            };
+
+            await _operationRepository.AddAsync(operation);
+            await _operationRepository.SaveChangesAsync();
+
+            return new OperationResult { Success = true, Amount = amountConverted };
         }
 
         public async Task<OperationResult> WithdrawAsync(int userId, string amount)
         {
 
             var user = await _accountService.GetUserByIdAsync(userId);
+
             if (user == null)
                 return new OperationResult { Success = false, Message = AccountConsts.CardNotFound };
+
             if (!decimal.TryParse(amount, out decimal amountConverted))
-            {
                 return new OperationResult { Success = false };
-            }
+
             amountConverted = decimal.Abs(decimal.Round(amountConverted, 2));
+
             if (amountConverted > user.CardAmount)
             {
                 return new OperationResult { Success = false, IsInsufficientFunds = true, Message = AccountConsts.InsufficientFunds };
             }
+
             var operation = new Operation
             {
                 User = user,
                 Amount = amountConverted,
                 OperationType = OperationType.Withdrawal
             };
+
             await _operationRepository.AddAsync(operation);
             await _operationRepository.SaveChangesAsync();
+
             return new OperationResult { Success = true, Amount = -amountConverted };
         }
     }
